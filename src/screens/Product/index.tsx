@@ -7,7 +7,7 @@ import RadioButton from '../../components/RadioButton/RadioButton';
 import Selector from '../../components/Selector/Selector';
 import type { Product } from '../../types';
 
-const Product = () => {
+export default function Product() {
 	const navigate = useNavigate();
 	const { id } = useParams();
 	const { selectedProduct, products, setSelectedProduct } = useProducts();
@@ -141,6 +141,4 @@ const Product = () => {
 			</div>
 		</div>
 	);
-};
-
-export default Product;
+}
