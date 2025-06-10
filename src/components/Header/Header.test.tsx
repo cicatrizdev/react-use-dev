@@ -11,15 +11,19 @@ jest.mock('react-router', () => ({
 
 describe('Header', () => {
 	beforeEach(() => {
-		console.log('estou rodando antes de cada teste');
-	});
-
-	beforeAll(() => {
 		render(
 			<MemoryRouter>
 				<Header />
 			</MemoryRouter>
 		);
+	});
+
+	afterEach(() => {
+		mockNavigate.mockClear();
+	});
+
+	afterAll(() => {
+		mockNavigate.mockReset();
 	});
 
 	test('deve renderizar o header na tela', () => {
