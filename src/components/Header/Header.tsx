@@ -5,7 +5,10 @@ import { useNavigate } from 'react-router';
 const Header = () => {
 	const navigate = useNavigate();
 	return (
-		<div className='flex justify-between items-center p-4 w-full bg-white px-20 fixed top-0 left-0 right-0 z-50'>
+		<div
+			data-testid='header'
+			className='flex justify-between items-center p-4 w-full bg-white px-20 fixed top-0 left-0 right-0 z-50'
+		>
 			<div>
 				<img
 					src={Logo}
