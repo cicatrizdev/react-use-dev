@@ -20,6 +20,8 @@ export const mockFetch = jest.fn((url: string) => {
 	});
 });
 
+global.fetch = mockFetch as jest.Mock;
+
 const mockNavigate = jest.fn();
 
 jest.mock('react-router', () => ({
