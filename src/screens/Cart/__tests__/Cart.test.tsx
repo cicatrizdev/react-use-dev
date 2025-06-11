@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ContextProvider, useCart } from '../../../context';
 import { BrowserRouter } from 'react-router';
 import { Wrapper } from '../../../routes/helpers';
@@ -115,5 +115,37 @@ describe('Cart', () => {
 		});
 
 		expect(screen.queryByText('Test Item')).not.toBeInTheDocument();
+	});
+
+	test('deve finalizar o pedido', async () => {
+		await renderCart();
+
+		const addItemButton = screen.getByTestId('add-item');
+		await act(async () => {
+			fireEvent.click(addItemButton);
+		});
+
+		const checkoutButton = screen.getByText('Finalizar pedido');
+		await act(async () => {
+			fireEvent.click(checkoutButton);
+		});
+
+		expect(screen.getByText('Processando...')).toBeInTheDocument();
+
+		await waitFor(
+			() => {
+				expect(screen.getByText('Pedido Realizado!')).toBeInTheDocument();
+			},
+			{ timeout: 3000 }
+		);
+
+		expect(screen.getByText('Seu pedido foi processado com sucesso')).toBeInTheDocument();
+
+		const returnButton = screen.getByText('Voltar para a loja');
+		await act(async () => {
+			fireEvent.click(returnButton);
+		});
+
+		expect(mockNavigate).toHaveBeenCalledWith('/');
 	});
 });
