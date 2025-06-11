@@ -1,4 +1,4 @@
-import { act, render } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import { ContextProvider, useCart } from '../../../context';
 import { BrowserRouter } from 'react-router';
 import { Wrapper } from '../../../routes/helpers';
@@ -69,4 +69,51 @@ const renderCart = async () => {
 	return result;
 };
 
-describe('Cart', () => {});
+describe('Cart', () => {
+	beforeEach(() => {
+		mockFetch.mockClear();
+		mockNavigate.mockClear();
+	});
+
+	test('deve renderizar a mensagem de carrinho vazio caso não tenha itens no carrinho', async () => {
+		await renderCart();
+
+		expect(screen.getByText('Seu carrinho está vazio')).toBeInTheDocument();
+
+		const continueShoppingButton = screen.getByText('Continuar comprando');
+		fireEvent.click(continueShoppingButton);
+		expect(mockNavigate).toHaveBeenCalledWith('/');
+	});
+
+	test('deve mostrar o item adicionado ao carrinho', async () => {
+		await renderCart();
+
+		const addItemButton = screen.getByTestId('add-item');
+		await act(async () => {
+			fireEvent.click(addItemButton);
+		});
+
+		expect(screen.getByText('Test Item')).toBeInTheDocument();
+
+		const incrementButton = screen.getByRole('button', { name: '+' });
+		await act(async () => {
+			fireEvent.click(incrementButton);
+		});
+
+		expect(screen.getByText('2')).toBeInTheDocument();
+
+		const decrementButton = screen.getByRole('button', { name: '-' });
+		await act(async () => {
+			fireEvent.click(decrementButton);
+		});
+
+		expect(screen.getByText('1')).toBeInTheDocument();
+
+		const removeButton = screen.getByAltText('trash');
+		await act(async () => {
+			fireEvent.click(removeButton);
+		});
+
+		expect(screen.queryByText('Test Item')).not.toBeInTheDocument();
+	});
+});
