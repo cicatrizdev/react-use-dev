@@ -51,5 +51,39 @@ const withForm: WithFormHOC = <P extends object>(
 			},
 			[props]
 		);
+
+		const handleBlur = useCallback(() => {
+			setTouched(true);
+
+			if ('onBlur' in props && typeof props.onBlur === 'function') {
+				props.onBlur();
+			}
+		}, [props]);
+
+		const handleFocus = useCallback(() => {
+			if ('onFocus' in props && typeof props.onFocus === 'function') {
+				props.onFocus();
+			}
+		}, [props]);
+
+		const enhancedProps: WrappedComponentProps<P> = {
+			...(componentProps as P),
+			value,
+			onChange: handleChange,
+			onBlur: handleBlur,
+			onFocus: handleFocus,
+			touched,
+			disabled: disabled || Boolean((props as Record<string, unknown>).disabled),
+			required: required || Boolean((props as Record<string, unknown>).required),
+		};
+
+		return <WrappedComponent {...enhancedProps} />;
 	};
+
+	const displayName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+	EnhancedComponent.displayName = `withForm(${displayName})`;
+
+	return EnhancedComponent;
 };
+
+export default withForm;
