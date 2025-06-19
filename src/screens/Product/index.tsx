@@ -9,6 +9,7 @@ import type { Product } from '../../types';
 import withForm from '../../components/withForm';
 
 const EnhancedRadioGroup = withForm(RadioGroup);
+const EnhancedSelector = withForm(Selector);
 
 export default function Product() {
 	const navigate = useNavigate();
@@ -109,10 +110,11 @@ export default function Product() {
 						{product.sizes && product.sizes.length > 1 && (
 							<div className='space-y-3'>
 								<h3 className='text-lg font-semibold text-[#0B254B]'>Tamanho</h3>
-								<Selector
+								<EnhancedSelector
 									label='Selecione o tamanho'
 									options={product.sizes}
-									onChange={setSelectedSize}
+									onChange={(value) => setSelectedSize(value as string)}
+									controlledValue={selectedSize}
 								/>
 							</div>
 						)}
@@ -120,10 +122,11 @@ export default function Product() {
 						{/* Quantity Selection */}
 						<div className='space-y-3'>
 							<h3 className='text-lg font-semibold text-[#0B254B]'>Quantidade</h3>
-							<Selector
+							<EnhancedSelector
 								label='Selecione a quantidade'
 								options={Array.from({ length: 10 }, (_, i) => (i + 1).toString())}
 								onChange={(value) => setQuantity(Number(value))}
+								controlledValue={quantity}
 							/>
 						</div>
 
