@@ -14,6 +14,10 @@ export interface WithFormConfig {
 	initialValue?: unknown;
 	required?: boolean;
 	disabled?: boolean;
+	onChange?: (value: unknown) => void;
+	onBlur?: () => void;
+	onFocus?: () => void;
+	controlledValue?: unknown;
 }
 
 export type WrappedComponentProps<P> = P & WithFormProps;
@@ -34,37 +38,45 @@ const withForm: WithFormHOC = <P extends object>(
 			initialValue,
 			required = false,
 			disabled = false,
+			onChange: onChangeCallback,
+			onBlur: onBlurCallback,
+			onFocus: onFocusCallback,
+			controlledValue,
 			...componentProps
 		} = { ...config, ...props };
 
-		const [value, setValue] = useState(initialValue);
+		const [internalValue, setInternalValue] = useState(initialValue);
 		const [touched, setTouched] = useState(false);
+
+		const value = controlledValue !== undefined ? controlledValue : internalValue;
 
 		const handleChange = useCallback(
 			(newValue: unknown) => {
-				setValue(newValue);
+				if (controlledValue !== undefined) {
+					setInternalValue(newValue);
+				}
 				setTouched(true);
 
-				if ('onChange' in props && typeof props.onChange === 'function') {
-					props.onChange(newValue);
+				if (onChangeCallback) {
+					onChangeCallback(newValue);
 				}
 			},
-			[props]
+			[controlledValue, onChangeCallback]
 		);
 
 		const handleBlur = useCallback(() => {
 			setTouched(true);
 
-			if ('onBlur' in props && typeof props.onBlur === 'function') {
-				props.onBlur();
+			if (onBlurCallback) {
+				onBlurCallback();
 			}
-		}, [props]);
+		}, [onBlurCallback]);
 
 		const handleFocus = useCallback(() => {
-			if ('onFocus' in props && typeof props.onFocus === 'function') {
-				props.onFocus();
+			if (onFocusCallback) {
+				onFocusCallback();
 			}
-		}, [props]);
+		}, [onFocusCallback]);
 
 		const enhancedProps: WrappedComponentProps<P> = {
 			...(componentProps as P),

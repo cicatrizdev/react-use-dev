@@ -3,12 +3,12 @@ import Button from '../../components/Button/Button';
 import { useCart, useProducts } from '../../context';
 import { formatPrice } from '../../utils';
 import { useNavigate, useParams } from 'react-router';
-import RadioButton from '../../components/RadioButton/RadioButton';
+import RadioGroup from '../../components/RadioButton/RadioGroup';
 import Selector from '../../components/Selector/Selector';
 import type { Product } from '../../types';
 import withForm from '../../components/withForm';
 
-const EnhancedRadioButton = withForm(RadioButton);
+const EnhancedRadioGroup = withForm(RadioGroup);
 
 export default function Product() {
 	const navigate = useNavigate();
@@ -96,16 +96,12 @@ export default function Product() {
 						{product.colors && product.colors.length > 1 && (
 							<div className='space-y-3'>
 								<h3 className='text-lg font-semibold text-[#0B254B]'>Cor</h3>
-								<div className='flex flex-wrap gap-3'>
-									{product.colors.map((color) => (
-										<EnhancedRadioButton
-											key={color}
-											label={color.charAt(0).toUpperCase() + color.slice(1)}
-											initialValue={color}
-											onChange={() => setSelectedColor(color)}
-										/>
-									))}
-								</div>
+								<EnhancedRadioGroup
+									options={product.colors}
+									initialValue={selectedColor}
+									onChange={(value) => setSelectedColor(value as string)}
+									controlledValue={selectedColor}
+								/>
 							</div>
 						)}
 
