@@ -1,5 +1,6 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect } from 'react';
+import { useFetch } from '../../hooks/useFetch';
 import type { Category } from '../../types';
 
 export const CategoriesContext = createContext<{
@@ -9,13 +10,29 @@ export const CategoriesContext = createContext<{
 });
 
 export const CategoriesProvider = ({ children }: { children: React.ReactNode }) => {
-	const [categories, setCategories] = useState<Category[]>([]);
+	const {
+		data: categories,
+		error,
+		fetchData,
+	} = useFetch<Category[]>({
+		url: 'http://localhost:3001/categories',
+		method: 'GET',
+	});
 
 	useEffect(() => {
-		fetch('http://localhost:3001/categories')
-			.then((res) => res.json())
-			.then((data) => setCategories(data));
+		fetchData();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return <CategoriesContext.Provider value={{ categories }}>{children}</CategoriesContext.Provider>;
+	useEffect(() => {
+		if (error) {
+			console.error('Error fetching categories:', error);
+		}
+	}, [error]);
+
+	return (
+		<CategoriesContext.Provider value={{ categories: categories || [] }}>
+			{children}
+		</CategoriesContext.Provider>
+	);
 };
