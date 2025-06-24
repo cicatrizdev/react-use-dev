@@ -6,21 +6,25 @@ const products = [
 		id: 1,
 		name: 'Produto 1',
 		price: 10,
+		quantity: 1,
 	},
 	{
 		id: 2,
 		name: 'Produto 2',
 		price: 20,
+		quantity: 1,
 	},
 	{
 		id: 3,
 		name: 'Produto 3',
 		price: 30,
+		quantity: 1,
 	},
 	{
 		id: 4,
 		name: 'Produto 4',
 		price: 40,
+		quantity: 1,
 	},
 ];
 
