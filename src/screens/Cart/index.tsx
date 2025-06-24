@@ -1,7 +1,7 @@
 import Counter from '../../components/Counter/Counter';
 import { useCart } from '../../context';
 import TrashIcon from '../../assets/trash.svg';
-import { formatPrice } from '../../utils';
+import { calculateTotalPrice, formatPrice } from '../../utils';
 import { useNavigate } from 'react-router';
 import { useState } from 'react';
 
@@ -11,7 +11,7 @@ const Cart = () => {
 	const [isProcessing, setIsProcessing] = useState(false);
 	const [orderSuccess, setOrderSuccess] = useState(false);
 
-	const totalPrice = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
+	const totalPrice = calculateTotalPrice(items);
 
 	const handleCheckout = async () => {
 		setIsProcessing(true);
