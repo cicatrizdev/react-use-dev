@@ -2,12 +2,14 @@ export const formatPrice = (price: number) => {
 	return price.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }).replace(/\s/g, '');
 };
 
-export const calculateTotalPrice = (products: { id: number; price: number }[]) => {
-	return products.reduce((acc, product) => acc + product.price, 0);
+export const calculateTotalPrice = (
+	products: { id: number; price: number; quantity: number }[]
+) => {
+	return products.reduce((acc, product) => acc + product.price * product.quantity, 0);
 };
 
 export const calculateTotalPriceWithDiscount = (
-	products: { id: number; price: number }[],
+	products: { id: number; price: number; quantity: number }[],
 	discount: number
 ) => {
 	if (discount >= 100) {
